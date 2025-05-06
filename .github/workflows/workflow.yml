@@ -15,8 +15,8 @@ on:
 
 #CÔNG VIỆC - JOBS
 jobs:
-  name: Install and publish
-  runs-on: ubuntu-latest
+  - name: Install and publish
+    runs-on: ubuntu-latest
 
 #INSTALL NODEJS & NPM ON VERCEL
 steps:
