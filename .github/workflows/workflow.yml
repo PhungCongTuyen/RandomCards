@@ -15,21 +15,21 @@ on:
 
 #CÔNG VIỆC - JOBS
 jobs:
-  Deploy-development:
-    runs-on: ubuntu-latest
+Deploy-development:
+  runs-on: ubuntu-latest
 
 #INSTALL NODEJS & NPM ON VERCEL
 steps:
-  – uses: actions/checkout@v2
+– uses: actions/checkout@v2
 
-  – name: Install Node.js
-  uses: actions/setup-node@v3
+– name: Install Node.js
+uses: actions/setup-node@v3
 
-  – name: Install npm
-  uses: actions/setup-node@v3
-  with:
-    node-version: ’20’
-    registry-url: ‘https://registry.npmjs.org/’
+– name: Install npm
+uses: actions/setup-node@v3
+with:
+  node-version: ’20’
+  registry-url: ‘https://registry.npmjs.org/’
 
 #INSTALL DEPENDENCIES
   – name: Install dependencies
