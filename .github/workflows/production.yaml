@@ -12,7 +12,7 @@ on:
 
 #CÔNG VIỆC - JOBS
 jobs:
-  deploy:
+  Deploy-Production:
     runs-on: ubuntu-latest
 
     steps:
