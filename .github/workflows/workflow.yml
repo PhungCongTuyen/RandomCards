@@ -38,7 +38,7 @@ jobs:
       #CREATE ENVIRONMENT IN VERCEL & BUILD IN VERCEL.
       # GITHUB.COM > SETTINGS > SECRETS AND VARIABLES > ACTIONS > ENVRIONEMENT SECRETS.
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=Production --token=${{ secrets.VERCEL_ORG_TOKEN }}
+        run: vercel pull --yes --environment=development --token=${{ secrets.VERCEL_ORG_TOKEN }}
 
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_ORG_TOKEN }}
