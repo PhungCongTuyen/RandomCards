@@ -5,7 +5,7 @@ export default function Navbar() {
     <nav className="w-full border-b px-4 py-2 flex items-center justify-between bg-background">
       <br />
       <div className="text-lg font-semibold">
-        <div>Ngoos</div>
+        <div>NgoosVN</div>
       </div>
       <div className="flex gap-2">
         <ModeToggle />
