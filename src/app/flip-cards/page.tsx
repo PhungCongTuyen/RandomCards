@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function FlipCards() {
   const array = [...Array(10).keys()];
-  const [isMultipleFlipping, setIsMultipleFlipping] = useState(false);
+  // const [isMultipleFlipping, setIsMultipleFlipping] = useState(false);
   console.log(array);
   return (
     <div>
