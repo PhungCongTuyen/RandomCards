@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/components/card";
-import { useState } from "react";
+// import { useState } from "react";
 
 export default function FlipCards() {
   const array = [...Array(10).keys()];
