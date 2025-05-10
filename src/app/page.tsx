@@ -10,18 +10,6 @@ export default function Home() {
     redirect("/flip-cards");
   };
 
-  const ball = {
-    width: 100,
-    height: 100,
-    backgroundColor: "rgb(180 255 228)",
-    borderRadius: "50%",
-    justifyContent: "center",
-    alignItems: "center",
-    display: "flex",
-    cursor: "pointer",
-    margin: "auto",
-  };
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowButton(true);
@@ -37,7 +25,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center uppercase text-9xl"
+          className="text-center uppercase text-9xl font-bold"
         >
           Just
         </motion.div>
@@ -45,7 +33,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.5 }}
-          className="text-center uppercase text-9xl"
+          className="text-center uppercase text-9xl font-bold"
         >
           For Fun
         </motion.div>
@@ -59,7 +47,7 @@ export default function Home() {
                 duration: 0.4,
                 scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
               }}
-              style={ball}
+              className="font-bold w-[100px] h-[100px] rounded-[50%] cursor-pointer flex m-auto items-center justify-center"
               onClick={goToAboutPage}
             >
               Let&apos;s go!
