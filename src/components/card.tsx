@@ -5,6 +5,13 @@ import { motion } from "motion/react";
 import React, { useState } from "react";
 import Image from "next/image";
 
+const style = {
+  display: "-webkit-box",
+  "-webkit-line-clamp": "4",
+  "-webkit-box-orient": "vertical",
+  overflow: "hidden",
+};
+
 export function Card({ cardBack }: { cardBack: string }) {
   const [isFlipped, setIsFlipped] = useState(false);
   return (
@@ -35,12 +42,7 @@ export function Card({ cardBack }: { cardBack: string }) {
         <div className="absolute w-full h-full bg-secondary rounded-xl shadow-xl flex items-center justify-center rotate-y-180 backface-hidden p-2">
           <h2
             className="text-xl font-bold wrap-anywhere text-ellipsis w-full text-center"
-            style={{
-              display: "-webkit-box",
-              "-webkit-line-clamp": "4",
-              "-webkit-box-orient": "vertical",
-              overflow: "hidden",
-            }}
+            style={style}
           >
             {cardBack}
           </h2>
