@@ -12,7 +12,6 @@ import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function FlipCards() {
-  const [isMultipleFlipping, setIsMultipleFlipping] = useState<boolean>(true);
   const [isEnableWheel, setIsEnableWheel] = useState<boolean>(false);
   const [isEnalbleBingo, setIsEnableBingo] = useState<boolean>(false);
   const [isBingo, setIsBingo] = useState<boolean>(false);
@@ -24,7 +23,6 @@ export default function FlipCards() {
   );
 
   const handleReset = useCallback(() => {
-    setIsMultipleFlipping(false);
     setListName("");
     setFinalList([]);
   }, []);
@@ -74,7 +72,6 @@ export default function FlipCards() {
   };
 
   const handleSwitchBingo = (value: boolean) => {
-    setIsMultipleFlipping(!value);
     setFinalList((prev) =>
       prev.slice(0, 25).map((i) => ({ ...i, isFlipped: value }))
     );
@@ -89,26 +86,9 @@ export default function FlipCards() {
   };
 
   const handleClickCard = (index: number) => {
-    if (isMultipleFlipping) {
-      const newList = [...finalList];
-
-      newList[index].isFlipped = !newList[index].isFlipped;
-    } else {
-      const newList = [...finalList].map((i) => ({
-        ...i,
-        isFlipped: false,
-      }));
-
-      newList[index].isFlipped = true;
-      setFinalList(newList);
-    }
-  };
-
-  const handleSwitchIsMultipleCards = (value: boolean) => {
-    if (!value) {
-      setFinalList((prev) => prev.map((i) => ({ ...i, isFlipped: false })));
-    }
-    setIsMultipleFlipping(value);
+    const newList = [...finalList];
+    newList[index].isFlipped = !newList[index].isFlipped;
+    setFinalList(newList);
   };
 
   useEffect(() => {
@@ -122,7 +102,7 @@ export default function FlipCards() {
             isFlipped: isEnalbleBingo,
           }))
       );
-    }
+    } else setFinalList([]);
   }, [listName, isEnalbleBingo]);
 
   const calculatePosition = useCallback(
@@ -254,17 +234,6 @@ export default function FlipCards() {
       <div className="col-span-12 md:col-span-4 flex flex-col gap-2 p-4 border ">
         <div className="flex items-center space-x-2 mb-4">
           <Switch
-            id="multiple-flipping"
-            checked={isMultipleFlipping}
-            onCheckedChange={(value) => handleSwitchIsMultipleCards(value)}
-            disabled={isEnalbleBingo}
-          />
-          <Label htmlFor="multiple-flipping">
-            Wants to flip multiple cards?
-          </Label>
-        </div>
-        <div className="flex items-center space-x-2 mb-4">
-          <Switch
             id="enable-wheel"
             checked={isEnableWheel}
             onCheckedChange={setIsEnableWheel}
@@ -283,7 +252,7 @@ export default function FlipCards() {
           />
           <Label htmlFor="enable-bingo">Wants to use it as bingo ?</Label>
 
-          {isEnalbleBingo && isBingo && (
+          {isEnalbleBingo && isBingo && finalList.length === 25 && (
             <div className="text-red-500 font-bold">Bingo!</div>
           )}
         </div>
