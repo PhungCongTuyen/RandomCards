@@ -64,8 +64,6 @@ export default function FlipCards() {
       } else {
         setListName(value);
       }
-    } else if (value.split("\n").length > 30) {
-      return;
     } else {
       setListName(value);
     }

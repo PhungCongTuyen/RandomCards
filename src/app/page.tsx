@@ -1,13 +1,15 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [showButton, setShowButton] = useState(false);
-  const goToAboutPage = () => {
-    redirect("/flip-cards");
+  const router = useRouter();
+
+  const goToFlipCardsPage = () => {
+    router.push("/flip-cards");
   };
 
   useEffect(() => {
@@ -48,7 +50,7 @@ export default function Home() {
                 scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
               }}
               className="font-bold w-[100px] h-[100px] rounded-[50%] cursor-pointer flex m-auto items-center justify-center"
-              onClick={goToAboutPage}
+              onClick={goToFlipCardsPage}
             >
               Let&apos;s go!
             </motion.div>
