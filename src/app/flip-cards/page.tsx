@@ -259,12 +259,13 @@ export default function FlipCards() {
             placeholder={
               isEnalbleBingo
                 ? "Please fill in 25 rows..."
-                : "Please fill in with multiple rows, max is 30 rows..."
+                : "Please fill in with multiple rows..."
             }
             value={listName}
             onChange={(event) => handleTextarea(event.target.value)}
           />
         </div>
+        <Label>Total rows: {finalList.length}</Label>
         <Button className="w-full" onClick={handleReset}>
           Reset
         </Button>
