@@ -3,18 +3,22 @@
 import { Card, FlipCard } from "@/components/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Wheel } from "@/components/wheel";
-import clsx from "clsx";
 import { Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function FlipCards() {
-  const [isEnableWheel, setIsEnableWheel] = useState<boolean>(false);
-  const [isEnalbleBingo, setIsEnableBingo] = useState<boolean>(false);
   const [isBingo, setIsBingo] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [listName, setListName] = useState<string>("");
   const [finalList, setFinalList] = useState<FlipCard[]>([]);
   const ref = useRef<HTMLDivElement>(null);
@@ -22,19 +26,34 @@ export default function FlipCards() {
     "idle"
   );
 
-  const handleReset = useCallback(() => {
-    setListName("");
+  const handleClear = useCallback(() => {
     setFinalList([]);
+    setListName("");
   }, []);
+
+  const handleReset = useCallback(() => {
+    const array = [
+      ...listName
+        ?.split("\n")
+        .filter((i) => !!i)
+        .map((item, index) => ({
+          id: index,
+          name: item,
+          isFlipped: true,
+        })),
+    ];
+    setFinalList(array);
+  }, [listName]);
 
   const shuffleArray = async () => {
     const array = [
       ...listName
         ?.split("\n")
         .filter((i) => !!i)
-        .map((item) => ({
+        .map((item, index) => ({
+          id: index,
           name: item,
-          isFlipped: isEnalbleBingo,
+          isFlipped: true,
         })),
     ];
     for (let i = array.length - 1; i > 0; i--) {
@@ -58,29 +77,11 @@ export default function FlipCards() {
   };
 
   const handleTextarea = (value: string) => {
-    if (isEnalbleBingo) {
-      if (value.split("\n").length > 25) {
-        return;
-      } else {
-        setListName(value);
-      }
+    if (value.split("\n").length > 25) {
+      return;
     } else {
       setListName(value);
     }
-  };
-
-  const handleSwitchBingo = (value: boolean) => {
-    setFinalList((prev) =>
-      prev.slice(0, 25).map((i) => ({ ...i, isFlipped: value }))
-    );
-    setListName((prev) =>
-      prev
-        .split("\n")
-        .filter((i) => i)
-        .slice(0, 25)
-        .join("\n")
-    );
-    setIsEnableBingo(value);
   };
 
   const handleClickCard = (index: number) => {
@@ -89,44 +90,55 @@ export default function FlipCards() {
     setFinalList(newList);
   };
 
+  const handleRenew = () => {
+    shuffleArray();
+    setIsBingo(false);
+  };
+
   useEffect(() => {
     if (listName?.length) {
       setFinalList(
         listName
           ?.split("\n")
           .filter((i) => !!i)
-          .map((item) => ({
+          .map((item, index) => ({
+            id: index,
             name: item,
-            isFlipped: isEnalbleBingo,
+            isFlipped: true,
           }))
       );
     } else setFinalList([]);
-  }, [listName, isEnalbleBingo]);
+  }, [listName]);
 
   const calculatePosition = useCallback(
-    (parentWidth: number, index: number, isEnalbleBingo: boolean) => {
-      const itemsInOneLine = Math.floor(
-        parentWidth / (isEnalbleBingo ? 128 : 136)
-      );
+    (parentWidth: number, index: number) => {
+      const itemsInOneLine = Math.floor(parentWidth / 128);
       const positionInLine = index % itemsInOneLine;
       const positionInColumn = Math.floor(index / itemsInOneLine);
 
       return {
-        x: positionInLine * (isEnalbleBingo ? 128 : 136),
-        y: positionInColumn * (isEnalbleBingo ? 128 : 202),
+        x: positionInLine * 128,
+        y: positionInColumn * 128,
       };
     },
     []
   );
 
   const validateBingo = (list: FlipCard[]) => {
+    if (!list.length || list.length < 25) return false;
     // Check rows
-    const flippedSet = list.filter((i) => !i.isFlipped);
+    const flippedSet = list.filter((i) => {
+      return !i.isFlipped;
+    });
+
     const size = 5;
     for (let r = 0; r < size; r++) {
       const rowStart = r * size;
       const row = list.slice(rowStart, rowStart + size);
-      if (row.every((cell) => flippedSet.includes(cell))) return true;
+      console.log(row);
+      if (row.every((cell) => flippedSet.includes(cell))) {
+        return true;
+      }
     }
 
     // Check columns
@@ -135,7 +147,9 @@ export default function FlipCards() {
       for (let r = 0; r < size; r++) {
         column.push(list[r * size + c]);
       }
-      if (column.every((cell) => flippedSet.includes(cell))) return true;
+      if (column.every((cell) => flippedSet.includes(cell))) {
+        return true;
+      }
     }
 
     // Check diagonals
@@ -146,8 +160,12 @@ export default function FlipCards() {
       diag2.push(list[i * size + (size - 1 - i)]); // top-right to bottom-left
     }
 
-    if (diag1.every((cell) => flippedSet.includes(cell))) return true;
-    if (diag2.every((cell) => flippedSet.includes(cell))) return true;
+    if (diag1.every((cell) => flippedSet.includes(cell))) {
+      return true;
+    }
+    if (diag2.every((cell) => flippedSet.includes(cell))) {
+      return true;
+    }
 
     return false;
   };
@@ -155,6 +173,10 @@ export default function FlipCards() {
   useEffect(() => {
     setIsBingo(validateBingo(finalList));
   }, [finalList]);
+
+  useEffect(() => {
+    setIsOpen(isBingo);
+  }, [isBingo]);
 
   const getAnimation = (index: number, x: number, y: number) => {
     switch (stage) {
@@ -170,7 +192,7 @@ export default function FlipCards() {
         return {
           y: 0 - y,
           x: 0 - x,
-          rotate: [0, index * 15, index * 25, index * -15, index * -25, 0],
+          rotate: [0, index * 2, index * 2, index * -2, index * -2, 0],
           scale: 1,
           transition: { duration: 1 },
         };
@@ -192,12 +214,11 @@ export default function FlipCards() {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-2">
+    <div className="p-4 flex flex-wrap">
       <div
-        className={clsx(
-          "flex gap-2 p-4 border col-span-8 flex-wrap content-start",
-          isEnalbleBingo ? "w-[707px] h-[707px] m-auto" : "w-auto h-auto"
-        )}
+        className={
+          "flex gap-2 p-4 border flex-wrap content-start w-[707px] h-[707px] min-w-[707px] min-h-[707px] m-auto"
+        }
         ref={ref}
       >
         {finalList.map((item, index) => {
@@ -205,11 +226,7 @@ export default function FlipCards() {
             ? ref?.current?.offsetWidth - 32
             : 0;
 
-          const { x, y } = calculatePosition(
-            parentWidth,
-            index,
-            isEnalbleBingo
-          );
+          const { x, y } = calculatePosition(parentWidth, index);
 
           return (
             <motion.div
@@ -220,54 +237,30 @@ export default function FlipCards() {
             >
               <Card
                 key={index}
+                id={index}
                 name={item?.name}
                 isFlipped={item?.isFlipped}
                 onClick={() => handleClickCard(index)}
-                isBingoCard={isEnalbleBingo}
+                isBingoCard={true}
               />
             </motion.div>
           );
         })}
       </div>
-      <div className="col-span-12 md:col-span-4 flex flex-col gap-2 p-4 border ">
-        <div className="flex items-center space-x-2 mb-4">
-          <Switch
-            id="enable-wheel"
-            checked={isEnableWheel}
-            onCheckedChange={setIsEnableWheel}
-            disabled
-          />
-          <Label htmlFor="enable-wheel">
-            Wants to use random money wheel ? (is updating)
-          </Label>
-        </div>
-
-        <div className="flex items-center space-x-2 mb-4">
-          <Switch
-            id="enable-bingo"
-            checked={isEnalbleBingo}
-            onCheckedChange={(value) => handleSwitchBingo(value)}
-          />
-          <Label htmlFor="enable-bingo">Wants to use it as bingo ?</Label>
-
-          {isEnalbleBingo && isBingo && finalList.length === 25 && (
-            <div className="text-red-500 font-bold">Bingo!</div>
-          )}
-        </div>
+      <div className="w-full xl:w-[462px] flex flex-col gap-2 p-4 border ">
         <div>
           <Textarea
-            placeholder={
-              isEnalbleBingo
-                ? "Please fill in 25 rows..."
-                : "Please fill in with multiple rows..."
-            }
+            placeholder={"Please fill in 25 rows..."}
             value={listName}
             onChange={(event) => handleTextarea(event.target.value)}
           />
         </div>
         <Label>Total rows: {finalList.length}</Label>
+        <Button className="w-full" onClick={handleClear}>
+          Clear
+        </Button>
         <Button className="w-full" onClick={handleReset}>
-          Reset
+          Reset bingo
         </Button>
         <Button
           className="w-full"
@@ -276,9 +269,32 @@ export default function FlipCards() {
         >
           {stage !== "idle" ? <Loader2 className="animate-spin" /> : "Shuffle"}
         </Button>
-
-        {isEnableWheel && <Wheel />}
       </div>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Congrats !</DialogTitle>
+            <DialogDescription>Finally you made this. Bingo!</DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="sm:justify-end">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => handleRenew()}
+            >
+              Renew!
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setIsBingo(false)}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

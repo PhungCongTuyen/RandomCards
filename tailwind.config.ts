@@ -10,6 +10,9 @@ const config: Config = {
     extend: {
       colors: {
         dark: "#313638",
+        button: {
+          DEFAULT: "hsl(var(--button))",
+        },
       },
     },
   },

@@ -13,6 +13,7 @@ const style = {
 };
 
 export interface FlipCard {
+  id?: number;
   name: string;
   isFlipped: boolean;
   onClick?: () => void;

@@ -1,86 +1,155 @@
-import { motion, useAnimation } from "motion/react";
-import { useMemo, useState } from "react";
+import React from "react";
+import { motion } from "framer-motion";
 
-export function Wheel() {
-  const [result, setResult] = useState("");
-  const controls = useAnimation();
+interface LuckyWheelProps {
+  names: string[];
+  isSpinning: boolean;
+  colors: string[];
+  spinDuration: number;
+}
 
-  const segments = [
-    { label: "🍕 Pizza", color: "#f87171" },
-    { label: "🎁 Gift", color: "#60a5fa" },
-    { label: "💰 Cash", color: "#34d399" },
-    { label: "❌ Nothing", color: "#fbbf24" },
-    { label: "🏆 Win", color: "#a78bfa" },
-    { label: "🍕 Pizza", color: "#f87171" },
-    { label: "🎁 Gift", color: "#60a5fa" },
-    { label: "💰 Cash", color: "#34d399" },
-    { label: "❌ Nothing", color: "#fbbf24" },
-    { label: "🏆 Win", color: "#a78bfa" },
-  ];
+export const LuckyWheel: React.FC<LuckyWheelProps> = ({
+  names,
+  isSpinning,
+  colors,
+  spinDuration,
+}) => {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const [rotation, setRotation] = React.useState(0);
+  const [targetRotation, setTargetRotation] = React.useState(0);
 
-  const segmentAngle = useMemo(() => {
-    return 360 / segments.length;
-  }, [segments]);
+  // Draw the wheel
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-  const spin = async () => {
-    const spins = 10;
-    const selected = Math.floor(Math.random() * segments.length);
-    const anglePerItem = 360 / segments.length;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    const rotateTo =
-      spins * 360 + (360 - selected * anglePerItem - anglePerItem / 2);
+    const width = canvas.width;
+    const height = canvas.height;
+    const radius = Math.min(width, height) / 2;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
-    await controls.start({
-      rotate: rotateTo,
-      transition: { duration: 3, ease: "easeInOut" },
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+
+    if (names.length === 0) {
+      // Draw empty wheel
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fillStyle = "#e4e4e7";
+      ctx.fill();
+      ctx.stroke();
+
+      // Draw text
+      ctx.fillStyle = "#71717a";
+      ctx.font = "bold 20px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("Add names", centerX, centerY);
+      return;
+    }
+
+    // Draw segments
+    const totalNames = names.length;
+    const arcSize = (2 * Math.PI) / totalNames;
+
+    names.forEach((name, index) => {
+      // Calculate angles - we need to offset by -Math.PI/2 to start at the top (0 degrees)
+      const startAngle = index * arcSize - Math.PI / 2;
+      const endAngle = (index + 1) * arcSize - Math.PI / 2;
+
+      // Draw segment
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+      ctx.closePath();
+
+      // Fill with color
+      ctx.fillStyle = colors[index % colors.length];
+      ctx.fill();
+
+      // Add border
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#ffffff";
+      ctx.stroke();
+
+      // Add name text
+      const textAngle = startAngle + arcSize / 2;
+      const textRadius = radius * 0.75;
+      const textX = centerX + textRadius * Math.cos(textAngle);
+      const textY = centerY + textRadius * Math.sin(textAngle);
+
+      // Save context state
+      ctx.save();
+
+      // Position and rotate text
+      ctx.translate(textX, textY);
+      ctx.rotate(textAngle + Math.PI / 2);
+
+      // Draw text
+      ctx.fillStyle = "#ffffff";
+      ctx.font = `bold ${Math.min(16, 200 / totalNames)}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      // Truncate text if too long
+      const maxLength = 12;
+      const displayName =
+        name.length > maxLength ? name.substring(0, maxLength) + "..." : name;
+      ctx.fillText(displayName, 0, 0);
+
+      // Restore context state
+      ctx.restore();
     });
 
-    setResult(segments[selected].label);
-  };
+    // Draw center circle
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius * 0.1, 0, 2 * Math.PI);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#d1d5db";
+    ctx.stroke();
+  }, [names, colors, rotation, isSpinning]);
+
+  // Handle spinning animation
+  React.useEffect(() => {
+    if (isSpinning && names.length > 0) {
+      // Generate random rotation (minimum 2 full rotations + random segment)
+      const minRotation = 2 * 360;
+      const randomRotation = Math.floor(Math.random() * 360);
+      const newTargetRotation = rotation + minRotation + randomRotation;
+
+      setTargetRotation(newTargetRotation);
+    }
+  }, [isSpinning, rotation, names]);
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="relative w-64 h-64 rounded-full overflow-hidden border-4 border-gray-700">
-        <motion.div
-          className="w-full h-full relative flex"
-          animate={controls}
-          initial={{ rotate: 0 }}
-        >
-          {segments.map((seg, i) => {
-            return (
-              <div
-                key={i}
-                className="absolute w-1/2 h-1/2 origin-bottom-right flex items-center justify-center"
-                style={{
-                  transform: `rotate(${segmentAngle * (i + 1)}deg)`,
-                  backgroundColor: seg.color,
-                  clipPath: `polygon(0% 0%, ${
-                    segmentAngle + 15
-                  }% 0%, 100% 100%, 0 ${segmentAngle + 15}%)`,
-                }}
-              >
-                <div
-                  style={{
-                    transform: `rotate(45deg)`,
-                  }}
-                >
-                  {seg.label}
-                </div>
-              </div>
-            );
-          })}
-        </motion.div>
-        <div className="absolute top-[54%] left-1/2 -translate-x-1/2 -translate-y-full w-0 h-0 border-l-[6px] border-r-[6px] border-b-[20px] border-l-transparent border-r-transparent border-b-red-500" />
+    <div className="w-full aspect-square relative">
+      <motion.canvas
+        ref={canvasRef}
+        width={500}
+        height={500}
+        className="w-full h-full lucky-wheel-canvas"
+        animate={{
+          rotate: targetRotation,
+        }}
+        transition={{
+          type: "spring",
+          duration: spinDuration,
+          bounce: 0.2,
+        }}
+        onAnimationComplete={() => {
+          setRotation(targetRotation % 360);
+        }}
+      />
+      {/* Triangle pointer */}
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+        <div className="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[20px] border-t-primary"></div>
       </div>
-
-      <button
-        onClick={spin}
-        className="px-4 py-2 bg-blue-600 text-white rounded"
-      >
-        Spin
-      </button>
-
-      {result && <p className="text-lg font-bold">You got: {result}</p>}
     </div>
   );
-}
+};
