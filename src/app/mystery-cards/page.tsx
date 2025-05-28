@@ -4,9 +4,9 @@ import { Card, FlipCard } from "@/components/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { LuckyWheel } from "@/components/wheel";
-import { WheelControls } from "@/components/wheel-control";
-import { useWheelState } from "@/hooks/use-wheel-state";
+// import { LuckyWheel } from "@/components/wheel";
+// import { WheelControls } from "@/components/wheel-control";
+// import { useWheelState } from "@/hooks/use-wheel-state";
 import { Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -19,18 +19,18 @@ export default function FlipCards() {
     "idle"
   );
 
-  const {
-    names,
-    setNames,
-    winner,
-    isSpinning,
-    spinWheel,
-    wheelColors,
-    setWheelColors,
-    spinDuration,
-    setSpinDuration,
-    finalRotation,
-  } = useWheelState();
+  // const {
+  //   names,
+  //   setNames,
+  //   winner,
+  //   isSpinning,
+  //   spinWheel,
+  //   wheelColors,
+  //   setWheelColors,
+  //   spinDuration,
+  //   setSpinDuration,
+  //   finalRotation,
+  // } = useWheelState();
 
   const handleReset = useCallback(() => {
     setListName("");
