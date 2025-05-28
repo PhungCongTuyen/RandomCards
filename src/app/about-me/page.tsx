@@ -46,7 +46,7 @@ export default function AboutMe() {
             scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
           }}
         >
-          I'm 27 and I love to watch Ibby's videos since I was 22 ^^!
+          I&apos;m 27 and I love to watch Ibby&apos;s videos since I was 22 ^^!
         </motion.div>
         <motion.div
           className="mt-4"
@@ -58,11 +58,11 @@ export default function AboutMe() {
             scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
           }}
         >
-          As I remember, he's mentioned that he wants to have new tool likes
-          Random Wheel and something to give him more ideas. Then I've made
-          this. It's not 100% perfect, but I hope it could help him to have more
-          ideas about making contents. Also other people can use it - Just for
-          fun!
+          As I remember, he&apos;s mentioned that he wants to have new tool
+          likes Random Wheel and something to give him more ideas. Then
+          I&apos;ve made this. It&apos;s not 100% perfect, but I hope it could
+          help him to have more ideas about making contents. Also other people
+          can use it - Just for fun!
         </motion.div>
 
         <motion.div
@@ -75,11 +75,12 @@ export default function AboutMe() {
             scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
           }}
         >
-          Remember! I'm not asking anyone to have to donate or give me money so
-          please don't get me wrong. If you want to support me even just a cent,
-          I'm happy with that. But one more time, I'm not asking you to give me
-          your money like a robber. I just want to help my dad to pay his
-          medical treatment fees for his personal issues
+          Remember! I&apos;m not asking anyone to have to donate or give me
+          money so please don&apos;t get me wrong. If you want to support me
+          even just a cent, I&apos;m happy with that. But one more time,
+          I&apos;m not asking you to give me your money like a robber. I just
+          want to help my dad to pay his medical treatment fees for his personal
+          issues
         </motion.div>
         <motion.div
           className="mt-4"
@@ -110,14 +111,14 @@ export default function AboutMe() {
             scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
           }}
         >
-          Sheeessh! I don't want to talk too much about him. Of course his
-          treatment fees could take all my life but I'm trying to do it{" "}
+          Sheeessh! I don&apos;t want to talk too much about him. Of course his
+          treatment fees could take all my life but I&apos;m trying to do it{" "}
           <span className="italic">
-            (If you don't know, it takes 24.000$, 80 times my saving money per
-            month. Jesus!)
+            (If you don&apos;t know, it takes 24.000$, 80 times my saving money
+            per month. Jesus!)
           </span>{" "}
-          But nah. Do I crying about it now? Nah, at least I've paid 3,4k$ for
-          him since 2024 so keep fighting dad.
+          But nah. Do I crying about it now? Nah, at least I&apos;ve paid 3,4k$
+          for him since 2024 so keep fighting dad.
         </motion.div>
         <motion.div
           className="mt-4 font-semibold italic"
