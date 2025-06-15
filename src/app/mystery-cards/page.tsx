@@ -4,9 +4,6 @@ import { Card, FlipCard } from "@/components/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-// import { LuckyWheel } from "@/components/wheel";
-// import { WheelControls } from "@/components/wheel-control";
-// import { useWheelState } from "@/hooks/use-wheel-state";
 import { Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -18,19 +15,6 @@ export default function FlipCards() {
   const [stage, setStage] = useState<"idle" | "shuffle" | "shake" | "spread">(
     "idle"
   );
-
-  // const {
-  //   names,
-  //   setNames,
-  //   winner,
-  //   isSpinning,
-  //   spinWheel,
-  //   wheelColors,
-  //   setWheelColors,
-  //   spinDuration,
-  //   setSpinDuration,
-  //   finalRotation,
-  // } = useWheelState();
 
   const handleReset = useCallback(() => {
     setListName("");
@@ -177,29 +161,6 @@ export default function FlipCards() {
         })}
       </div>
       <div className="col-span-12 md:col-span-3 flex flex-col gap-2 p-4 border ">
-        {/* <div className="flex items-center space-x-2 mb-4">
-          <Switch
-            id="enable-wheel"
-            checked={isEnableWheel}
-            onCheckedChange={setIsEnableWheel}
-          />
-          <Label htmlFor="enable-wheel">
-            Wants to use random money wheel ? (is updating)
-          </Label>
-        </div>
-
-        <div className="flex items-center space-x-2 mb-4">
-          <Switch
-            id="enable-bingo"
-            checked={isEnalbleBingo}
-            onCheckedChange={(value) => handleSwitchBingo(value)}
-          />
-          <Label htmlFor="enable-bingo">Wants to use it as bingo ?</Label>
-
-          {isEnalbleBingo && isBingo && finalList.length === 25 && (
-            <div className="text-red-500 font-bold">Bingo!</div>
-          )}
-        </div> */}
         <div>
           <Textarea
             placeholder={"Please fill in with multiple rows..."}
@@ -218,26 +179,6 @@ export default function FlipCards() {
         >
           {stage !== "idle" ? <Loader2 className="animate-spin" /> : "Shuffle"}
         </Button>
-
-        {/* {isEnableWheel && (
-          <div>
-            <LuckyWheel
-              names={names}
-              isSpinning={isSpinning}
-              colors={wheelColors}
-              spinDuration={spinDuration}
-            />
-            <WheelControls
-              names={names}
-              setNames={setNames}
-              wheelColors={wheelColors}
-              setWheelColors={setWheelColors}
-              spinDuration={spinDuration}
-              setSpinDuration={setSpinDuration}
-              isSpinning={isSpinning}
-            />
-          </div>
-        )} */}
       </div>
     </div>
   );

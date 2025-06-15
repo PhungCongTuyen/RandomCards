@@ -14,7 +14,7 @@ export default function Home() {
         route: "/mystery-cards",
       },
       {
-        name: "Lucky Wheel (updating)",
+        name: "Lucky Wheel",
         route: "/lucky-wheel",
       },
       {
@@ -29,7 +29,7 @@ export default function Home() {
   }, []);
 
   const goToPage = (route: string) => {
-    if (!["/lucky-wheel", "/coin-flip"].includes(route)) router.push(route);
+    router.push(route);
   };
 
   return (
