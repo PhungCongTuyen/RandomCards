@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { LOCAL_STORAGE_KEYS } from "@/constants/constants";
 
 export default function FlipCards() {
   const [isBingo, setIsBingo] = useState<boolean>(false);
@@ -29,6 +30,7 @@ export default function FlipCards() {
   const handleClear = useCallback(() => {
     setFinalList([]);
     setListName("");
+    localStorage.setItem(LOCAL_STORAGE_KEYS.BINGO_DATA, JSON.stringify([]));
   }, []);
 
   const handleReset = useCallback(() => {
@@ -81,6 +83,10 @@ export default function FlipCards() {
       return;
     } else {
       setListName(value);
+      localStorage.setItem(
+        LOCAL_STORAGE_KEYS.BINGO_DATA,
+        JSON.stringify(value)
+      );
     }
   };
 
@@ -177,6 +183,14 @@ export default function FlipCards() {
   useEffect(() => {
     setIsOpen(isBingo);
   }, [isBingo]);
+
+  useEffect(() => {
+    const lastData = localStorage.getItem(LOCAL_STORAGE_KEYS.BINGO_DATA);
+    if (lastData && lastData.length) {
+      const parsedData = JSON.parse(lastData);
+      setListName(parsedData);
+    }
+  }, []);
 
   const getAnimation = (index: number, x: number, y: number) => {
     switch (stage) {

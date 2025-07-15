@@ -4,6 +4,7 @@ import { Card, FlipCard } from "@/components/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { LOCAL_STORAGE_KEYS } from "@/constants/constants";
 import { Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -19,6 +20,10 @@ export default function FlipCards() {
   const handleReset = useCallback(() => {
     setListName("");
     setFinalList([]);
+    localStorage.setItem(
+      LOCAL_STORAGE_KEYS.MYSTERY_CARDS_DATA,
+      JSON.stringify([])
+    );
   }, []);
 
   const shuffleArray = async () => {
@@ -54,6 +59,10 @@ export default function FlipCards() {
 
   const handleTextarea = (value: string) => {
     setListName(value);
+    localStorage.setItem(
+      LOCAL_STORAGE_KEYS.MYSTERY_CARDS_DATA,
+      JSON.stringify(value)
+    );
   };
 
   const handleClickCard = (index: number) => {
@@ -76,6 +85,16 @@ export default function FlipCards() {
       );
     } else setFinalList([]);
   }, [listName]);
+
+  useEffect(() => {
+    const lastData = localStorage.getItem(
+      LOCAL_STORAGE_KEYS.MYSTERY_CARDS_DATA
+    );
+    if (lastData && lastData.length) {
+      const parsedData = JSON.parse(lastData);
+      setListName(parsedData);
+    }
+  }, []);
 
   const calculatePosition = useCallback(
     (parentWidth: number, index: number) => {
