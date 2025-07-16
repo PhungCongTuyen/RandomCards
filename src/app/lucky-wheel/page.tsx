@@ -110,12 +110,20 @@ export default function LuckyWheel() {
   }, []);
 
   const handleRemove = useCallback(() => {
+    //get selected value
     const selectedValue = !!selected && items[selected].label;
+
+    //get original array in the textarea
     const lines = listName.split("\n").filter((i) => !!i);
-    const currentIndex = items.findIndex((x) => x.label === selectedValue);
+
+    //get the first item same as selected value in the textarea
+    const currentIndex = lines.findIndex((x) => x === selectedValue);
+
+    //remove in the textarea
     lines.splice(currentIndex, 1);
 
     const newLines = lines.join("\n");
+
     setListName(newLines);
 
     const newItems = newLines
@@ -128,12 +136,13 @@ export default function LuckyWheel() {
       }));
 
     setItems(newItems);
+    setIsOpen(false);
+    setSelected(null);
 
     localStorage.setItem(
       LOCAL_STORAGE_KEYS.LUCKY_WHEEL_DATA,
       JSON.stringify(newItems)
     );
-    setIsOpen(false);
   }, [items, listName, selected]);
 
   const shuffleArray = async () => {

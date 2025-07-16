@@ -18,8 +18,8 @@ export default function Home() {
         route: "/lucky-wheel",
       },
       {
-        name: "Coin Flip (updating)",
-        route: "/coin-flip",
+        name: "Climb The Top",
+        route: "/climb-the-top",
       },
       {
         name: "Bingo",
