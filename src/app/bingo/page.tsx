@@ -16,10 +16,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { LOCAL_STORAGE_KEYS } from "@/constants/constants";
+import { Input } from "@/components/ui/input";
 
 export default function FlipCards() {
   const [isBingo, setIsBingo] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [lines, setLines] = useState<number>(1);
   const [listName, setListName] = useState<string>("");
   const [finalList, setFinalList] = useState<FlipCard[]>([]);
   const ref = useRef<HTMLDivElement>(null);
@@ -132,6 +134,8 @@ export default function FlipCards() {
 
   const validateBingo = (list: FlipCard[]) => {
     if (!list.length || list.length < 25) return false;
+
+    let lineCount = 0;
     // Check rows
     const flippedSet = list.filter((i) => {
       return !i.isFlipped;
@@ -141,9 +145,8 @@ export default function FlipCards() {
     for (let r = 0; r < size; r++) {
       const rowStart = r * size;
       const row = list.slice(rowStart, rowStart + size);
-      console.log(row);
       if (row.every((cell) => flippedSet.includes(cell))) {
-        return true;
+        lineCount++;
       }
     }
 
@@ -154,7 +157,7 @@ export default function FlipCards() {
         column.push(list[r * size + c]);
       }
       if (column.every((cell) => flippedSet.includes(cell))) {
-        return true;
+        lineCount++;
       }
     }
 
@@ -167,13 +170,17 @@ export default function FlipCards() {
     }
 
     if (diag1.every((cell) => flippedSet.includes(cell))) {
-      return true;
+      lineCount++;
     }
     if (diag2.every((cell) => flippedSet.includes(cell))) {
-      return true;
+      lineCount++;
     }
 
-    return false;
+    return lineCount === lines;
+  };
+
+  const handleChangeLines = (value: number) => {
+    setLines(value);
   };
 
   useEffect(() => {
@@ -262,6 +269,15 @@ export default function FlipCards() {
         })}
       </div>
       <div className="w-full xl:w-[462px] flex flex-col gap-2 p-4 border ">
+        <Label>Lines to bingo:</Label>
+        <Input
+          type="number"
+          value={lines}
+          min={1}
+          max={5}
+          onChange={(event) => handleChangeLines(Number(event.target.value))}
+        />
+        <Label>Data:</Label>
         <div>
           <Textarea
             placeholder={"Please fill in 25 rows..."}
