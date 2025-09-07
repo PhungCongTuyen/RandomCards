@@ -32,7 +32,7 @@ export default function LuckyWheel() {
   const [selected, setSelected] = useState<number | null>(null);
   const [totalRotation, setTotalRotation] = useState(0);
 
-  const drawWheel = () => {
+  const drawWheel = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -53,18 +53,32 @@ export default function LuckyWheel() {
       ctx.arc(center, center, center, angle, angle + arc);
       ctx.fillStyle = items[i].color;
       ctx.fill();
-      ctx.save();
 
-      // Draw label
+      ctx.save();
       ctx.translate(center, center);
       ctx.rotate(angle + arc / 2);
       ctx.textAlign = "right";
       ctx.fillStyle = "#fff";
-      ctx.font = "16px Arial";
-      ctx.fillText(items[i].label, center - 10, 10);
+
+      // === Dynamic font size ===
+      const radius = center - 10; // where the text sits
+      const maxWidth = arc * radius; // max width of slice at that radius
+      let fontSize = 20; // start with something big
+      ctx.font = `${fontSize}px Arial`;
+
+      const textWidth = ctx.measureText(items[i].label).width;
+
+      if (textWidth > maxWidth) {
+        const scale = maxWidth / textWidth;
+        fontSize = Math.floor(fontSize * scale);
+        ctx.font = `${fontSize}px Arial`;
+      }
+
+      // Draw the label
+      ctx.fillText(items[i].label, radius, 10);
       ctx.restore();
     }
-  };
+  }, [items]);
 
   const getRandomColor = () => {
     const letters = "0123456789ABCDEF";
@@ -201,7 +215,7 @@ export default function LuckyWheel() {
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-12 md:col-span-9 border p-4">
-        <div className="relative w-[508px] h-[508px] bg-blue-400 rounded-full p-1 m-auto">
+        <div className="relative w-[808px] h-[808px] bg-blue-400 rounded-full p-1 m-auto">
           {/* Pointer */}
           <div className="absolute top-1/2 right-[-8px] transform -translate-y-1/2 z-10">
             <div className="w-0 h-0 border-y-8 border-y-transparent border-r-[20px] border-r-red-500" />
@@ -214,8 +228,8 @@ export default function LuckyWheel() {
           >
             <canvas
               ref={canvasRef}
-              width={500}
-              height={500}
+              width={800}
+              height={800}
               className="rounded-full"
             />
           </motion.div>
